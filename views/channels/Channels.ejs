@@ -1,0 +1,54 @@
+<%- include('../header/Header', { title: pageTitle }) %>
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <%- include('../dashboard/Dashboard', { route: currentRoute }) %>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            <!-- Navbar -->
+            <header class="bg-blue-800 text-white p-4 flex justify-between items-center sticky top-0">
+                <%- include('../navbar/Navbar') %>
+            </header>
+
+            <!-- Mobile Dropdown Menu -->
+            <%- include('../dropdown_menu/DropdownMenu') %>
+
+            <!-- Channel Content -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 m-6">
+                <% if (channels.length > 0) { %>
+                    <% channels.forEach(channel => { %>
+                        <div class="border border-gray-200 rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                            <div class="p-4 flex flex-col items-center">
+                                <figure class="flex justify-center items-center w-full h-32">
+                                    <img src="<%= channel.imgurl %>" alt="<%= channel.cname %>" class="w-32 h-32 object-cover rounded-md">
+                                </figure>
+                                <h2 class="text-lg font-semibold mt-2 text-center"><%= channel.cname %></h2>
+                                <div class="flex space-x-2 mt-4">
+                                    <!-- Play Button -->
+                                    <button onclick="playChannel('<%= channel.id %>')" class="btn btn-sm btn-primary">Play</button>
+                                    
+                                    <!-- Delete Button -->
+                                    <button onclick="deleteChannel('<%= channel.id %>')" class="btn btn-sm btn-error text-white">Delete</button>
+                                    
+                                    <!-- Edit Button -->
+                                    <button onclick="editChannel('<%= channel.id %>')" class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p class="p-6 m-6 text-lg text-amber-500">No channels available.</p>
+                <% } %>
+            </div>
+        </main>
+    </div>
+
+    <%- include('../footer/Footer') %>
+    <script src="../../js/Hamburger.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../js/Channel.js"></script>
+    
+</body>
+</html>

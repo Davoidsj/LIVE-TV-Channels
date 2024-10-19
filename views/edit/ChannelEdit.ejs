@@ -1,0 +1,113 @@
+<%- include('../header/Header'), {title: pageTitle} %>
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <%- include('../dashboard/Dashboard', { route: currentRoute }) %>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            <!-- Navbar -->
+            <header class="bg-blue-800 text-white p-4 flex justify-between items-center sticky top-0">
+                <%- include('../navbar/Navbar') %>
+            </header>
+
+            <!-- Mobile Dropdown Menu -->
+            <%- include('../dropdown_menu/DropdownMenu') %>
+
+            <!-- Edit Channel Form -->
+            <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md m-4 text-yellow-900" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+                <h2 class="text-2xl font-semibold mb-6">Edit Channel</h2>
+                <form id="editChannelForm" method="POST" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Channel Name</label>
+                        <input type="text" placeholder="Channel Name" class="input input-bordered w-full" name="cName" value="<%= channel.cname.trim() %>" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Description</label>
+                        <textarea placeholder="Sample Channel Description" class="textarea textarea-bordered w-full" rows="5" cols="5" name="description" required><%= channel.description %></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Live URL</label>
+                        <input type="text" placeholder="Live URL" class="input input-bordered w-full" name="liveURL" value="<%= channel.liveurl.trim() %>" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Thumbnail</label>
+                        <input type="file" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" accept="image/*" name="image" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Facebook</label>
+                        <input type="text" placeholder="Facebook" class="input input-bordered w-full" name="fbURL" value="<%= channel.fburl.trim() %>" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Twitter</label>
+                        <input type="text" placeholder="Twitter" class="input input-bordered w-full" name="twURL" value="<%= channel.twurl.trim() %>" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">YouTube</label>
+                        <input type="text" placeholder="YouTube" class="input input-bordered w-full" name="youtubeURL" value="<%= channel.youtubeurl.trim() %>" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Website</label>
+                        <input type="text" placeholder="Website" class="input input-bordered w-full" name="website" value="<%= channel.website.trim() %>" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Select Category</label>
+                        <select class="select select-bordered w-full" name="category" required>
+                            <option disabled <%= !channel.category ? 'selected' : '' %>>Select a category</option>
+                            <option value="News" <%= channel.category === 'News' ? 'selected' : '' %>>News</option>
+                            <option value="Sports" <%= channel.category === 'Sports' ? 'selected' : '' %>>Sports</option>
+                            <option value="Entertainment" <%= channel.category === 'Entertainment' ? 'selected' : '' %>>Entertainment</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" id="updateButton" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <%- include('../footer/Footer') %>
+    <script src="../../js/Hamburger.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('updateButton').addEventListener('click', async function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            const form = document.getElementById('editChannelForm');
+            const formData = new FormData(form);
+            const channelId = '<%= channel.id %>';
+
+            try {
+                const response = await axios.put(`/update/${channelId}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                
+                if (response.status === 200) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Optionally, redirect or reload the page after the user clicks OK
+                        window.location.reload();
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'There was an error updating the channel information. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    </script>
+    
+</body>
+</html>

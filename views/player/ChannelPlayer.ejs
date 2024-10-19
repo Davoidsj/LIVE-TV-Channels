@@ -1,0 +1,97 @@
+<%- include('../header/Header', { title: pageTitle }) %> 
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <%- include('../dashboard/Dashboard', { route: currentRoute }) %>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            <!-- Navbar -->
+            <header class="bg-blue-800 text-white p-4 flex justify-between items-center sticky top-0 z-10">
+                <%- include('../navbar/Navbar') %>
+            </header>
+
+            <!-- Mobile Dropdown Menu -->
+            <%- include('../dropdown_menu/DropdownMenu') %>
+
+            <!-- Video Player Section -->
+            <section class="p-8">
+                <div class="max-w-3xl mx-auto">
+                    <div class="bg-gradient-to-r from-blue-500 via-teal-500 to-green-500 shadow-lg rounded-lg overflow-hidden">
+                        <video id="video" class="w-full" controls>
+                            Your browser does not support the video tag.
+                        </video>
+                      
+                        <div class="p-4">
+                            <h2 class="text-2xl md:text-3xl font-bold mb-2 text-yellow-300 text-center">
+                                <%= cl.cname %>
+                            </h2>
+                            <p class="text-lg text-white mb-4"><%= cl.description %></p>
+                            <div class="flex flex-wrap space-x-4">
+                                <a href="<%= cl.fburl %>" class="text-white hover:text-blue-300 hover:underline" target="_blank">Facebook</a>
+                                <a href="<%= cl.twurl %>" class="text-white hover:text-cyan-300 hover:underline" target="_blank">Twitter</a>
+                                <a href="<%= cl.youtubeurl %>" class="text-white hover:text-red-300 hover:underline" target="_blank">YouTube</a>
+                                <a href="<%= cl.website %>" class="text-white hover:text-green-300 hover:underline" target="_blank">Website</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <%- include('../footer/Footer') %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const videoSrc = '<%= cl.liveurl %>';
+        let video = document.getElementById('video');
+        
+        if (Hls.isSupported()) {
+            let hls = new Hls();
+            
+            // Enhanced error handling
+            hls.on(Hls.Events.ERROR, (event, data)  =>  {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.error("Fatal network error encountered, retrying...");
+                            hls.startLoad(); // Retry loading the video
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.error("Fatal media error encountered, trying to recover...");
+                            hls.recoverMediaError(); // Attempt to recover from media error
+                            break;
+                        default:
+                            console.error("Unrecoverable error encountered, destroying HLS instance.", data);
+                            hls.destroy(); // Destroy HLS instance if unrecoverable error occurs
+                            break;
+                    }
+                } else {
+                    console.warn("Non-fatal error occurred:", data);
+                }
+            });
+            
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            video.play().catch(error => {
+                console.error("Error playing video:", error);
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            // For browsers that natively support HLS
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', ()  =>  {
+                video.play().catch(error => {
+                    console.error("Error playing video in native HLS:", error);
+                });
+            });
+        } else {
+            console.error("HLS is not supported on this browser.");
+        }
+    });
+    </script>
+    <script src="../../js/Hamburger.js" type="text/javascript"></script>
+</body>
+</html>

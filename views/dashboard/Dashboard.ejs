@@ -1,0 +1,11 @@
+<aside class="w-full md:w-64 bg-blue-900 text-white flex flex-col <%= (route === '/' || route == '/categories') ? ' md:h-screen lg:h-screen' : 'h-auto' %>">
+    <div class="p-4 text-2xl font-bold border-b border-blue-700">
+        Dashboard
+    </div>
+    <nav class="flex-1 p-4 flex flex-col overflow-y-auto">
+        <a href="/" class="block py-2 text-gray-300 hover:text-white transition-colors duration-200">Home</a>
+        <a href="/channels" class="block py-2 text-gray-300 hover:text-white transition-colors duration-200">Channels</a>
+        <a href="/categories" class="block py-2 text-gray-300 hover:text-white transition-colors duration-200">Categories</a>
+    </nav>
+</aside>
+
