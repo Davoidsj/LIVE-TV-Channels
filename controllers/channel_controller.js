@@ -113,7 +113,6 @@ exports.updateChannelInfo = async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error updating channel info:', error); // Log the error
         res.status(500).json({ error: error.message });
     }
 };
