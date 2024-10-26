@@ -21,7 +21,7 @@ const port = 3001;
 
 app.listen(port,()=>{
   console.log(chalk.bgGreenBright(`Server is running on port ${port}`));
-})
+});
 
 
 

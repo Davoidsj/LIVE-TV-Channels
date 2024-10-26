@@ -3,6 +3,7 @@ const pool = require('../models/db');
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
+const { readSQLFile } = require('../models/readSQL');
 
 
 
@@ -11,7 +12,7 @@ exports.getChannels = async(req,res)=>{
 
     try{
      
-        const result = await pool.query("SELECT * FROM channelTb");
+        const result = await pool.query(readSQLFile('../sql/getchannels.sql'));
         res.status(200).json(result.rows);
 
     }
@@ -27,7 +28,7 @@ exports.getChannel = async(req,res)=>{
     try{
         const {id} = req.params;
 
-        const book = await pool.query("SELECT * FROM channelTb WHERE id = $1",[id]);
+        const book = await pool.query(readSQLFile('../sql/getchannel.sql'),[id]);
 
     
         res.status(200).json({message :  `specific channel is returned: ` ,data: book.rows});
@@ -92,7 +93,7 @@ exports.updateChannelInfo = async (req, res) => {
                 ...form.getHeaders(),
             },
             params: {
-                key: 'e9b47d73a55e22126c5cf9ac173f9b9b',
+                key: `${process.env.IBB_KEY}`,
             },
         });
 
@@ -101,7 +102,7 @@ exports.updateChannelInfo = async (req, res) => {
         
         // Update the channel information in the database
         const updatedChannel = await pool.query(
-            "UPDATE channelTb SET cName = $1, description = $2, liveURL = $3, imgURL = $4, fbURL = $5, twURL = $6, youtubeURL = $7, website = $8, category = $9 WHERE id = $10 RETURNING *",
+            readSQLFile('../sql/channel_upload.sql'),
             [cName, description, liveURL, imgURL, fbURL, twURL, youtubeURL, website, category, id]
         );
 
@@ -145,7 +146,7 @@ exports.deleteChannel = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const delChannel = await pool.query("DELETE FROM channelTb WHERE id = $1", [id]);
+        const delChannel = await pool.query(readSQLFile('../sql/deletechannel.sql'), [id]);
 
         // Check if any row was deleted
         if (delChannel.rowCount === 0) {
@@ -189,7 +190,7 @@ exports.uploadChannelData = async (req, res) => {
                 ...form.getHeaders(),
             },
             params: {
-                key: 'e9b47d73a55e22126c5cf9ac173f9b9b',
+                key: `${process.env.IBB_KEY}`,
             },
         });
 
@@ -197,7 +198,7 @@ exports.uploadChannelData = async (req, res) => {
 
         // Insert the new channel data into the database
         const newChannel = await pool.query(
-            "INSERT INTO channelTb(id, cName, description, liveURL, imgURL, fbURL, twURL, youtubeURL, website, category) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
+            readSQLFile('../sql/createchannel.sql'),
             [id, cName, desc, url, imgURL, facebook, twitter, youtube, website, dropdown_menu]
         );
 

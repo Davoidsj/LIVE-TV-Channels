@@ -1,0 +1,1 @@
+UPDATE channelTb SET cName = $1, description = $2, liveURL = $3, imgURL = $4, fbURL = $5, twURL = $6, youtubeURL = $7, website = $8, category = $9 WHERE id = $10 RETURNING *;
