@@ -5,8 +5,6 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { readSQLFile } = require('../models/readSQL');
 
-
-
 exports.getChannels = async(req,res)=>{
 
 
@@ -136,7 +134,7 @@ exports.categoryNavigate = async (req, res) => {
         const { category } = req.params;
         const response = await axios.get('http://localhost:3001/channelList');
         const categories = response.data.filter(item => item.category == category);
-        res.render('specificCategory/CategoryFind.ejs',{pageTitle : `Channel Category ${category}`,currentRoute: req.path,category : categories});
+        res.render('specificCategory/CategoryFind',{pageTitle : `Channel Category ${category}`,currentRoute: req.path,category : categories});
     } catch (error) {
         res.json({ error: error.message });
     }
