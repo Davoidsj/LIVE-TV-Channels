@@ -1,16 +1,19 @@
 const playChannel = id => {
-    axios.get(`/play/${id}`)
-        .then(response => {
+    $.ajax({
+        url: `/play/${id}`,
+        method: 'GET',
+        success: () => {
             window.location.href = `/play/${id}`;
-        })
-        .catch(error => {
-            console.error('Error editing the channel:', error);
+        },
+        error: error => {
+            console.error('Error playing the channel:', error);
             Swal.fire(
                 'Error!',
                 'An error occurred while trying to play the channel. Please try again.',
                 'error'
             );
-        });
+        }
+    });
 };
 
 const deleteChannel = id => {
@@ -22,43 +25,91 @@ const deleteChannel = id => {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
+    }).then(result => {
         if (result.isConfirmed) {
-            axios.delete(`/delete/${id}`)
-                .then(response => {
+            $.ajax({
+                url: `/delete/${id}`,
+                method: 'DELETE',
+                success: response => {
                     Swal.fire(
                         'Deleted!',
-                        response.data.message,
+                        response.message,
                         'success'
                     ).then(() => {
                         location.reload();
                     });
-                })
-                .catch(error => {
-                    console.error('There was a problem with the delete operation:', error);
+                },
+                error: error => {
+                    console.error('Error deleting the channel:', error);
                     Swal.fire(
                         'Error!',
                         'An error occurred while trying to delete the channel. Please try again.',
                         'error'
                     );
-                });
+                }
+            });
         }
     });
 };
 
 const editChannel = id => {
-    axios.get(`/edit/${id}`)
-        .then(response => {
-            // Handle the response, redirect or load data as needed
+    $.ajax({
+        url: `/edit/${id}`,
+        method: 'GET',
+        success: () => {
             window.location.href = `/edit/${id}`;
-        })
-        .catch(error => {
+        },
+        error: error => {
             console.error('Error editing the channel:', error);
             Swal.fire(
                 'Error!',
                 'An error occurred while trying to edit the channel. Please try again.',
                 'error'
             );
-        });
+        }
+    });
 };
 
+$('#updateButton').on('click', event => {
+    event.preventDefault();
+    
+    const channelId = $('#updateButton').data('id');
+    
+    const formData = {
+        cName: $('input[name="cName"]').val(),
+        description: $('textarea[name="description"]').val(),
+        liveURL: $('input[name="liveURL"]').val(),
+        imgURL: $('input[name="imgURL"]').val(),
+        fbURL: $('input[name="fbURL"]').val(),
+        twURL: $('input[name="twURL"]').val(),
+        youtubeURL: $('input[name="youtubeURL"]').val(),
+        website: $('input[name="website"]').val(),
+        category: $('select[name="category"]').val()
+    };
+    
+    $.ajax({
+        url: `/update/${channelId}`,
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: response => {
+            Swal.fire({
+                title: 'Success!',
+                text: response.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location.reload();
+            });
+        },
+        error: error => {
+            console.error('Error updating the channel:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'There was an error updating the channel information. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+});

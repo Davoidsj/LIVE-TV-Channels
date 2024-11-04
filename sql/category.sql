@@ -1,0 +1,1 @@
+INSERT INTO categoryDB(id,category,cgURL) VALUES($1, $2,$3) RETURNING *;

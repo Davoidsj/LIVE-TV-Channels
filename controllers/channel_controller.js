@@ -20,6 +20,38 @@ exports.getChannels = async(req,res)=>{
 
 };
 
+
+exports.getCategories = async(req,res)=>{
+
+
+    try{
+     
+        const result = await pool.query(readSQLFile('../sql/categoryFind.sql'));
+        res.status(200).json(result.rows);
+
+    }
+    catch(error){ 
+        res.json({error : error.message});
+    }
+
+};
+
+exports.getAllCategories = async(req,res)=>{
+
+
+    try{
+     
+        const result = await pool.query(readSQLFile('../sql/getAllCategories.sql'));
+        res.status(200).json(result.rows);
+
+    }
+    catch(error){ 
+        res.json({error : error.message});
+    }
+
+};
+
+
 exports.getChannel = async(req,res)=>{
 
 
@@ -77,30 +109,12 @@ exports.editChannel = async(req,res)=>{
 exports.updateChannelInfo = async (req, res) => {
     try {
         const { id } = req.params;
-        const { cName, description, liveURL, fbURL, twURL, youtubeURL, website, category } = req.body;
-
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file uploaded' });
-        }
-
-        const form = new FormData();
-        form.append('image', fs.createReadStream(req.file.path));
-
-        const response = await axios.post('https://api.imgbb.com/1/upload', form, {
-            headers: {
-                ...form.getHeaders(),
-            },
-            params: {
-                key: `${process.env.IBB_KEY}`,
-            },
-        });
-
-        const imgURL = response.data.data.url; 
-    
+        const { cName, description, liveURL,imgURL, fbURL, twURL, youtubeURL, website, category } = req.body;
+   
         
         // Update the channel information in the database
         const updatedChannel = await pool.query(
-            readSQLFile('../sql/channel_upload.sql'),
+            readSQLFile('../sql/channel_update.sql'),
             [cName, description, liveURL, imgURL, fbURL, twURL, youtubeURL, website, category, id]
         );
 
@@ -132,9 +146,10 @@ exports.defaultURL = async (req, res) => {
 exports.categoryNavigate = async (req, res) => {
     try {
         const { category } = req.params;
-        const response = await axios.get('http://localhost:3001/channelList');
+        const response = await axios.get('http://localhost:3001/categoryFind');
         const categories = response.data.filter(item => item.category == category);
-        res.render('specificCategory/CategoryFind',{pageTitle : `Channel Category ${category}`,currentRoute: req.path,category : categories});
+        res.render('specificCategory/CategoryFind',{pageTitle : `Channel Category
+            | ${category}`,currentRoute: req.path,category : categories});
     } catch (error) {
         res.json({ error: error.message });
     }
@@ -159,6 +174,25 @@ exports.deleteChannel = async (req, res) => {
     }
 };
 
+
+exports.deleteCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const delChannel = await pool.query(readSQLFile('../sql/deleteCategory.sql'), [id]);
+
+        // Check if any row was deleted
+        if (delChannel.rowCount === 0) {
+            return res.status(404).json({ message: `Category with id ${id} not found.` });
+        }
+
+        res.status(200).send({message : 'Successfully deleted category.'});
+   
+    } catch (error) {
+   
+        res.status(500).json({ error: error.message });
+    }
+};
 
 
 
@@ -227,20 +261,36 @@ exports.createNewChannel = async (req, res) => {
 
     try{
         
-    res.render('addNewChannel/NewChannel',{pageTitle : 'Create a channel',currentRoute: req.path});
+        const response = await axios.get('http://localhost:3001/getAllCategories');
+    res.render('addNewChannel/NewChannel',{pageTitle : 'Create a channel',currentRoute: req.path, categories : response.data});
     }
     catch(error){
         res.json({error : error.message});
     }
 
 };
-
 exports.displayAllCategories = async (req, res) => {
+    try {
+        const response = await axios.get('http://localhost:3001/getAllCategories');
+
+        // Pass the transformed array to the view
+        res.render('categories/Categories', {
+            pageTitle: 'All Categories',
+            currentRoute: req.path,
+            categories: response.data
+        });
+    } catch (error) {
+        res.json({ error: error.message });
+    }
+};
+
+
+exports.createNewCategory = async (req, res) => {
 
 
     try{
        
-    res.render('categories/Categories',{pageTitle : 'All Categories',currentRoute: req.path});
+    res.render('newCategory/createCategory',{pageTitle : 'Create a new Category',currentRoute: req.path});
     }
     catch(error){
         res.json({error : error.message});
@@ -249,3 +299,85 @@ exports.displayAllCategories = async (req, res) => {
 };
 
 
+exports.categoryDataSend = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        // Destructuring the required field from the form body
+        const { category } = req.body;
+
+     
+
+        const id = uuidv4(); // Generate a unique ID for the new channel
+
+        // Upload the image to imgbb
+        const form = new FormData();
+        form.append('image', fs.createReadStream(req.file.path));
+
+        const response = await axios.post('https://api.imgbb.com/1/upload', form, {
+            headers: {
+                ...form.getHeaders(),
+            },
+            params: {
+                key: `${process.env.IBB_KEY}`,
+            },
+        });
+
+        const imgURL = response.data.data.url; 
+
+        // Insert the new category data into the database
+        const newCategory = await pool.query(
+            readSQLFile('../sql/category.sql'),
+            [id, category, imgURL]
+        );
+
+        // Return the created category data
+        res.status(201).json({ message: `New category created:`, data: newCategory.rows });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.editCategory = async(req,res)=>{
+
+
+    try{
+        const {id} = req.params;
+
+        const response = await axios.get('http://localhost:3001/getAllCategories');
+        const cg = response.data.find(item => item.id == id);
+
+        res.render('edit/CategoryEdit',{pageTitle : 'Edit a category',currentRoute: req.path,ct : cg,routeId : id});
+
+    }
+    catch(error){
+        res.json({error : error.message});
+    }
+
+};
+
+exports.updateCategoryInfo = async (req, res) => {
+    try {
+        const { category, cgURL } = req.body;
+        const { id } = req.params;
+
+        // Update the category in the database
+        const updatedCategory = await pool.query(
+            readSQLFile('../sql/categoryUpdate.sql'),
+            [category, cgURL, id]
+        );
+
+        // Check if the update was successful
+        if (updatedCategory.rowCount > 0) {
+            res.status(200).json({ message: 'Category updated successfully!', data: updatedCategory.rows[0] });
+        } else {
+            res.status(404).json({ message: `Category with ID ${id} not found.` });
+        }
+
+    } catch (error) {
+        console.error("Update error:", error); // Log the error for debugging
+        res.status(500).json({ error: error.message || 'An error occurred while updating the category.' });
+    }
+};

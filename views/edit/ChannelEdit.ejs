@@ -15,9 +15,9 @@
             <%- include('../dropdown_menu/DropdownMenu') %>
 
             <!-- Edit Channel Form -->
-            <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md m-4 text-yellow-900" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+            <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md my-24 text-yellow-500" style="background: linear-gradient(135deg, #03cf3a 0%, #1b05dc 100%);">
                 <h2 class="text-2xl font-semibold mb-6">Edit Channel</h2>
-                <form id="editChannelForm" method="POST" enctype="multipart/form-data">
+                <form id="editChannelForm" method="POST" >
                     <div class="mb-4">
                         <label class="block text-sm font-medium mb-1">Channel Name</label>
                         <input type="text" placeholder="Channel Name" class="input input-bordered w-full" name="cName" value="<%= channel.cname.trim() %>" required />
@@ -32,7 +32,7 @@
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium mb-1">Thumbnail</label>
-                        <input type="file" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" accept="image/*" name="image" />
+                        <input type="text" placeholder="Image URL" class="input input-bordered w-full" name="imgURL" value="<%= channel.imgurl.trim() %>" required />
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium mb-1">Facebook</label>
@@ -60,7 +60,7 @@
                         </select>
                     </div>
                     <div class="flex justify-end">
-                        <button type="button" id="updateButton" class="btn btn-primary">Update</button>
+                        <button type="button" id="updateButton"class="btn btn-primary"  data-id="<%= channel.id %>">Update Channel</button>
                     </div>
                 </form>
             </div>
@@ -68,46 +68,14 @@
     </div>
 
     <%- include('../footer/Footer') %>
-    <script src="../../js/Hamburger.js" type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.getElementById('updateButton').addEventListener('click', async function (event) {
-            event.preventDefault(); // Prevent the default form submission
-            
-            const form = document.getElementById('editChannelForm');
-            const formData = new FormData(form);
-            const channelId = '<%= channel.id %>';
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="../../js/Hamburger.js" type="text/javascript"></script>
+    <script src="../../js/Channel.js"></script>
 
-            try {
-                const response = await axios.put(`/update/${channelId}`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                
-                if (response.status === 200) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: response.data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        // Optionally, redirect or reload the page after the user clicks OK
-                        window.location.reload();
-                    });
-                }
-            } catch (error) {
-                console.error(error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'There was an error updating the channel information. Please try again.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
-    </script>
+
     
 </body>
 </html>

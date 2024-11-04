@@ -1,4 +1,9 @@
-<aside class="w-full md:w-64 bg-blue-900 text-white flex flex-col <%= (route === '/' || route == '/categories') ? ' md:h-screen lg:h-screen' : 'h-auto' %>">
+<% 
+  const asideHeightClass = (route === '/' || route === '/newcategory' || (route.startsWith('/category/edit/') && id)) 
+    ? 'md:h-screen lg:h-screen' 
+    : 'h-auto'; 
+%>
+<aside class="w-full md:w-64 bg-blue-900 text-white flex flex-col <%= asideHeightClass %>">
     <div class="p-4 text-2xl font-bold border-b border-blue-700">
         Dashboard
     </div>
@@ -8,4 +13,3 @@
         <a href="/categories" class="block py-2 text-gray-300 hover:text-white transition-colors duration-200">Categories</a>
     </nav>
 </aside>
-

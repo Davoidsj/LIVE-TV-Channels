@@ -18,7 +18,7 @@
             <section class="p-8">
                 <div class="max-w-3xl mx-auto">
                     <div class="bg-gradient-to-r from-blue-500 via-teal-500 to-green-500 shadow-lg rounded-lg overflow-hidden">
-                        <video id="video" class="w-full" controls>
+                        <video id="video" class="w-full" data-liveurl="<%= cl.liveurl %>"  controls>
                             Your browser does not support the video tag.
                         </video>
                       
@@ -43,55 +43,9 @@
 
     <%- include('../footer/Footer') %>
     
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const videoSrc = '<%= cl.liveurl %>';
-        let video = document.getElementById('video');
-        
-        if (Hls.isSupported()) {
-            let hls = new Hls();
-            
-            // Enhanced error handling
-            hls.on(Hls.Events.ERROR, (event, data)  =>  {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            console.error("Fatal network error encountered, retrying...");
-                            hls.startLoad(); // Retry loading the video
-                            break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                            console.error("Fatal media error encountered, trying to recover...");
-                            hls.recoverMediaError(); // Attempt to recover from media error
-                            break;
-                        default:
-                            console.error("Unrecoverable error encountered, destroying HLS instance.", data);
-                            hls.destroy(); // Destroy HLS instance if unrecoverable error occurs
-                            break;
-                    }
-                } else {
-                    console.warn("Non-fatal error occurred:", data);
-                }
-            });
-            
-            hls.loadSource(videoSrc);
-            hls.attachMedia(video);
-            video.play().catch(error => {
-                console.error("Error playing video:", error);
-            });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // For browsers that natively support HLS
-            video.src = videoSrc;
-            video.addEventListener('loadedmetadata', ()  =>  {
-                video.play().catch(error => {
-                    console.error("Error playing video in native HLS:", error);
-                });
-            });
-        } else {
-            console.error("HLS is not supported on this browser.");
-        }
-    });
-    </script>
+   <script src="../../js/ChannelLoad.js "></script>
     <script src="../../js/Hamburger.js" type="text/javascript"></script>
 </body>
 </html>

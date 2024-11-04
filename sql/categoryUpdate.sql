@@ -1,0 +1,1 @@
+UPDATE categoryDB SET category = $1, cgURL = $2 WHERE id = $3 RETURNING *;

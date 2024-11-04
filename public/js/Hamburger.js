@@ -1,11 +1,12 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const menuToggle = document.getElementById('menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
+$(document).ready(() => {
+    const $menuToggle = $('#menu-toggle');
+    const $mobileMenu = $('#mobile-menu');
     
-    if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+    if ($menuToggle.length && $mobileMenu.length) {
+        $menuToggle.on('click', () => {
+            $mobileMenu.toggleClass('hidden');
         });
     }
 });
+
 
