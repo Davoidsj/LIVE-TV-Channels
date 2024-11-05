@@ -7,9 +7,8 @@ $('#addCategoryForm').on('submit', e => {
         url: '/addNewCategory',
         method: 'POST',
         data: formData,
-        processData: false,  // Prevent jQuery from automatically transforming the data into a query string
-        contentType: false,  // Prevent jQuery from setting the Content-Type header (for multipart/form-data)
-
+        processData: false,
+        contentType: false,
         success: response => {
             Swal.fire({
                 icon: 'success',

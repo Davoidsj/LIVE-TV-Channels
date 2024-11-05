@@ -28,7 +28,13 @@
                                     <!-- Play Button -->
                                     <button onclick="playChannel('<%= channel.id %>')" class="btn btn-sm btn-primary">Play</button>
                                     
-                                    <!-- Delete Button -->
+                  <!-- Spinner with "Processing..." Text -->
+<div id="spinner" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+        <span class="text-white text-lg font-semibold">Processing...</span>
+    </div>
+</div>                  <!-- Delete Button -->
                                     <button onclick="deleteCategory('<%= channel.id %>')" class="btn btn-sm btn-error text-white">Delete</button>
                                     
                                     <!-- Edit Button -->
@@ -46,7 +52,7 @@
 
     <%- include('../footer/Footer') %>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../../js/Hamburger.js" type="text/javascript"></script>
     <script src="../../js/Channel.js"></script>

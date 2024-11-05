@@ -1,12 +1,18 @@
+const spinner = $('#spinner');
+
 const playChannel = id => {
+     // Show the spinner
+     spinner.removeClass('hidden');
     $.ajax({
         url: `/play/${id}`,
         method: 'GET',
         success: () => {
+            spinner.addClass('hidden');
             window.location.href = `/play/${id}`;
         },
         error: error => {
             console.error('Error playing the channel:', error);
+            spinner.addClass('hidden');
             Swal.fire(
                 'Error!',
                 'An error occurred while trying to play the channel. Please try again.',
@@ -15,6 +21,7 @@ const playChannel = id => {
         }
     });
 };
+
 
 const deleteChannel = id => {
     Swal.fire({

@@ -27,6 +27,16 @@
                                 <div class="flex space-x-2 mt-4">
                                     <!-- Play Button -->
                                     <button onclick="playChannel('<%= channel.id %>')" class="btn btn-sm btn-primary">Play</button>
+                                    <!-- Spinner Element -->
+<!-- Spinner with "Processing..." Text -->
+<div id="spinner" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+        <span class="text-white text-lg font-semibold">Processing...</span>
+    </div>
+</div>
+
+ 
                                     
                                     <!-- Delete Button -->
                                     <button onclick="deleteChannel('<%= channel.id %>')" class="btn btn-sm btn-error text-white">Delete</button>

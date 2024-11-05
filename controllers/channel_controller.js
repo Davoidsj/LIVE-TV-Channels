@@ -133,10 +133,10 @@ exports.updateChannelInfo = async (req, res) => {
 
 exports.defaultURL = async (req, res) => {
     try {
-        const response = await axios.get('http://localhost:3001/channelList');
-        const categories = response.data.map(item => item.category);
-        const uniqueCategories = new Set(categories);
-        res.render('index',{pageTitle : 'LIVE TV ',currentRoute: req.path, channels : response.data, category : uniqueCategories});
+        const re = await axios.get('http://localhost:3001/getAllCategories');
+        const categories = re.data.map(item => item.category);
+        const resp = await axios.get('http://localhost:3001/channelList');
+        res.render('index',{pageTitle : 'LIVE TV ',currentRoute: req.path, channels : resp.data, category : categories});
     } catch (error) {
         res.json({ error: error.message });
     }
