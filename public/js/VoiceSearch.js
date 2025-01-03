@@ -20,7 +20,7 @@ $(document).ready(function () {
             transcript = transcript.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, ''); // Only remove non-alphanumeric characters except spaces
 
             // Send the normalized name to the backend to fetch the channel ID
-            const apiUrl = `http://localhost:3001/getChannelId`;
+            const apiUrl = `/getChannelId`;
 
             $.ajax({
                 url: apiUrl,
