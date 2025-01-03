@@ -30,7 +30,7 @@ $(document).ready(function () {
                 success: function (response) {
                     if (response && response.id) {
                         // Redirect to the play URL with the channel ID
-                        const playUrl = `http://localhost:3001/play/${response.id}`;
+                        const playUrl = `/play/${response.id}`;
                         window.location.href = playUrl;
                     } else {
                         $('#voice-search').val('');
