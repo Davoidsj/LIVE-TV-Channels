@@ -1,14 +1,32 @@
-<h1 class="text-2xl md:text-3xl font-bold bg-blue-800 p-4 ">Live TV</h1>
-<nav class="hidden md:flex space-x-4  bg-blue-800 p-4 ">
+<h1 class="text-2xl md:text-3xl font-bold bg-blue-800 p-4">Live TV</h1>
+
+<!-- Voice Search Bar -->
+<div class="bg-blue-800 p-4 flex items-center space-x-2">
+     <input 
+        type="text" 
+        id="voice-search" 
+        class="w-full p-2 rounded text-black" 
+        placeholder="Search for live channels" 
+        />
+    <button 
+        id="mic-button" 
+        class="text-white p-2 rounded-full bg-gray-600 hover:bg-gray-700 focus:outline-none">
+        🎤
+    </button>
+</div>
+
+<nav class="hidden md:flex space-x-4 bg-blue-800 p-4">
     <a href="/" class="hover:text-gray-200 hover:underline">Home</a>
     <a href="/categories" class="hover:text-gray-200 hover:underline">Categories</a>
     <a href="/channels" class="hover:text-gray-200 hover:underline">Channels</a>
-    <a href="/newchannel" class="hover:text-gray-200 hover:underline">Add New Channel </a>
-    <a href="/newcategory" class="hover:text-gray-200 hover:underline">Add New Category </a>
-    
+    <a href="/newchannel" class="hover:text-gray-200 hover:underline">Add New Channel</a>
+    <a href="/newcategory" class="hover:text-gray-200 hover:underline">Add New Category</a>
 </nav>
 
 <!-- Mobile Menu Button -->
 <button class="md:hidden text-white focus:outline-none sticky top-0 bg-blue-800 p-4 z-10" id="menu-toggle">
     ☰
 </button>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="../../js/VoiceSearch.js" type="text/javascript" ></script>

@@ -86,6 +86,27 @@ exports.playChannel = async(req,res)=>{
 
 };
 
+
+exports.getChannelId = async (req, res) => {
+    const { cName } = req.body;
+
+    try {
+        const query = readSQLFile('../sql/channelSearchByName.sql');
+        const values = [cName];
+
+        const result = await pool.query(query, values);
+
+        if (result.rows.length > 0) {
+            res.json({ id: result.rows[0].id });
+        } else {
+            res.json({ id: null });
+        }
+    } catch (error) {
+        console.error('Error executing query:', error);
+        res.status(500).json({ error: 'Database query failed' });
+    }
+};
+
 exports.editChannel = async(req,res)=>{
 
 

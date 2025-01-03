@@ -1,5 +1,5 @@
 const express = require('express');
-const {  defaultURL, displayAllChannels, createNewChannel, displayAllCategories, uploadChannelData, getChannels, getChannel, deleteChannel ,playChannel, editChannel,updateChannelInfo, categoryNavigate, createNewCategory, categoryDataSend, getCategories, getAllCategories, deleteCategory, editCategory, updateCategoryInfo} = require('../controllers/channel_controller');
+const {  defaultURL, displayAllChannels, createNewChannel, displayAllCategories, uploadChannelData, getChannels, getChannel, deleteChannel ,playChannel, editChannel,updateChannelInfo, categoryNavigate, createNewCategory, categoryDataSend, getCategories, getAllCategories, deleteCategory, editCategory, updateCategoryInfo, getChannelId} = require('../controllers/channel_controller');
 const multer = require('multer');
 const path = require('path');
 const router = express.Router();
@@ -22,6 +22,7 @@ router.get('/channelList',getChannels);
 router.get('/channel/:id',getChannel);
 router.get('/channels/:category',categoryNavigate);
 router.get('/play/:id',playChannel);
+router.post('/getChannelId',getChannelId)
 router.get('/getAllCategories',getAllCategories);
 router.delete('/delete/:id',deleteChannel);
 router.delete('/category/delete/:id',deleteCategory);
